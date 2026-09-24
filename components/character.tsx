@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import Image from "next/image";
+import { asset } from "@/lib/asset";
 
 /* The cast. Each entry is one Figma component, exported as a square PNG at 2x
    (the whole component frame, so the soft ground shadow comes with it).
@@ -43,7 +44,7 @@ export function Character({
     <div className={`${/\babsolute\b/.test(className) ? "" : "relative"} aspect-square ${className}`} style={style} aria-hidden="true">
       {has(file) ? (
         <Image
-          src={`/${file}`}
+          src={asset(`/${file}`)}
           alt=""
           fill
           sizes={sizes}
@@ -72,7 +73,7 @@ export function Island({ className = "" }: { className?: string }) {
   if (has(file)) {
     return (
       <div className={`relative aspect-[1440/860] ${className}`}>
-        <Image src={`/${file}`} alt="Pixel Spell's island, with the fox, cat, wolf and bird" fill sizes="100vw" className="object-contain" />
+        <Image src={asset(`/${file}`)} alt="Pixel Spell's island, with the fox, cat, wolf and bird" fill sizes="100vw" className="object-contain" />
       </div>
     );
   }
