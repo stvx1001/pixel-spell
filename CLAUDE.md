@@ -64,11 +64,18 @@ The fox, cat, wolf and bird are raster images in Figma. This cloud environment
 cannot download from figma.com, so they are exported by Steven and committed as
 files. `components/character.tsx` lists each one with its Figma component id.
 
-- Export the **whole component** as PNG @2x (square, with its ground shadow)
-  and save as `public/characters/<name>.png`.
-- Until a file exists, `<Character>` renders a labelled dashed placeholder.
-  The check runs at build time, so adding a PNG needs no code change.
-- Footer illustration: frame "Spell Isle" (`4070:418`) → `public/island.png`.
+- Each file is 800×800 (the 400px component at 2x), **transparent**, with the
+  component's soft ground shadow. Until a file exists, `<Character>` renders a
+  labelled dashed placeholder; the check runs at build time.
+- **Figma renders of these components come back opaque** (component fill
+  `#f9f6ea`, and `download_assets` flattens even a fill-less frame). So the
+  PNGs were composed from each component's *raw* transparent `Art` image
+  (FIT into the Art rect) over its `Shadow` ellipse (`#2a2140` at the layer's
+  opacity, layer blur 6 ≈ Gaussian sigma 3). Flattened back onto `#f9f6ea` they
+  match Figma's render to <1/255 on average. Re-pulling needs `www.figma.com`
+  allowed in the environment's network settings.
+- Footer illustration: frame "Spell Isle" (`4070:418`) → `public/island.png`
+  (2880×1720, opaque on `#fbf8f2`, the footer's own colour, so no seam).
 
 ## Still placeholder (from Figma)
 
