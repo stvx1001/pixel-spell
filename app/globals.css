@@ -1,0 +1,98 @@
+@import "tailwindcss";
+
+/* Pixel Spell design tokens — values taken from the Figma file
+   (SkorKu Website 3.0 › page "Ref" › "Pixel Spell — Home (Desktop 1440)"). */
+@theme {
+  --color-ink: #0d0e1a;
+  --color-cream: #fbf8f2;
+  --color-sand: #f2ead3;
+  --color-pink: #f2549e;
+  --color-pink-deep: #d93d86;
+  --color-yellow: #ffca48;
+  --color-teal: #6db9b9;
+  --color-teal-deep: #2e9c9c;
+  --color-rose: #f5acb7;
+  --color-green: #72b33a;
+  --color-orange: #f0961e;
+
+  --color-tint-teal: #d8eeee;
+  --color-tint-pink: #fde1ee;
+  --color-tint-yellow: #fff0cc;
+  --color-tint-green: #e3f0d5;
+
+  --font-display: var(--font-shrikhand);
+  --font-sans: var(--font-geist);
+  --font-mono: var(--font-geist-mono);
+  --font-block: var(--font-archivo-black);
+  --font-hand: var(--font-caveat);
+  --font-pixel: var(--font-silkscreen);
+
+  --animate-marquee: marquee 40s linear infinite;
+}
+
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* Floating pixels: a slow bob with their 12° tilt */
+@keyframes bob {
+  0%,
+  100% {
+    transform: translateY(0) rotate(12deg);
+  }
+  50% {
+    transform: translateY(-10px) rotate(12deg);
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  /* characters are allowed to stand outside their cards; never let that scroll sideways */
+  overflow-x: clip;
+  background: var(--color-cream);
+  color: var(--color-ink);
+  font-family: var(--font-sans), system-ui, sans-serif;
+}
+
+/* Section eyebrow: "(06)  WAYS TO WORK" */
+@utility eyebrow {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  white-space: pre;
+}
+
+/* Shrikhand section heading, 84px on desktop */
+@utility title {
+  font-family: var(--font-display);
+  font-size: clamp(44px, 6.4vw, 84px);
+  line-height: 1;
+  letter-spacing: -0.01em;
+}
+
+/* Mono lead paragraph under a heading */
+@utility lead {
+  font-family: var(--font-mono);
+  font-size: clamp(15px, 1.3vw, 17px);
+  line-height: 1.7;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
