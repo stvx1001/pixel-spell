@@ -8,7 +8,16 @@ This repo is the studio's one-page site, built from the Figma design.
 ## Stack and commands
 
 Next.js 16 (App Router, Turbopack) + Tailwind CSS v4 + TypeScript. No other
-dependencies. Target host: Vercel (free tier deploys private repos).
+dependencies.
+
+**Hosting: GitHub Pages**, https://stvx1001.github.io/pixel-spell/ (the repo is
+public). The site is a static export (`output: "export"`). Every push to `main`
+runs `.github/workflows/deploy.yml`, which builds with
+`NEXT_PUBLIC_BASE_PATH=/pixel-spell` and force-pushes `out/` to `gh-pages`.
+Paths to files in `public/` must go through `asset()` (`lib/asset.ts`) —
+`next/image` does not add the base path to string `src`. To check a build the
+way Pages serves it, put `out/` under a `pixel-spell/` folder and serve the
+parent. On a custom domain, drop the base path from the workflow.
 
 ```bash
 npm install
