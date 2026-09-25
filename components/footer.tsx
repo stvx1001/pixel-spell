@@ -1,5 +1,8 @@
+import Image from "next/image";
+import { asset } from "@/lib/asset";
+import { BriefLink } from "./brief";
 import { Island } from "./character";
-import { BOOK_A_CALL } from "./ui";
+import { EMAIL } from "./ui";
 
 /* TODO: real social URLs */
 const SOCIAL = [
@@ -9,16 +12,22 @@ const SOCIAL = [
   ["LinkedIn", "#"],
 ];
 
-function Dotted({ items }: { items: React.ReactNode[] }) {
+/* A row of items with pink dots between them. `stackOnPhone` drops the dots and puts
+   each item on its own line below md, as in the Figma mobile footer. */
+function Dotted({ items, gap = "gap-2 md:gap-5", stackOnPhone = false }: { items: React.ReactNode[]; gap?: string; stackOnPhone?: boolean }) {
   return (
-    <p className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
+    <div className={`flex flex-wrap items-center justify-center ${stackOnPhone ? "flex-col gap-2 md:flex-row md:gap-5" : gap}`}>
       {items.map((item, i) => (
-        <span key={i} className="flex items-center gap-5">
-          {i > 0 && <span className="text-pink" aria-hidden="true">•</span>}
+        <span key={i} className={`flex items-center ${gap}`}>
+          {i > 0 && (
+            <span className={`text-pink ${stackOnPhone ? "hidden md:inline" : ""}`} aria-hidden="true">
+              •
+            </span>
+          )}
           {item}
         </span>
       ))}
-    </p>
+    </div>
   );
 }
 
@@ -26,21 +35,28 @@ const link = "transition-colors hover:text-pink-deep";
 
 export function Footer() {
   return (
-    <footer className="bg-cream pt-20 text-center md:pt-[120px]">
-      <div className="flex flex-col gap-5 px-5 font-medium">
+    <footer className="bg-cream pt-[72px] text-center md:pt-[120px]">
+      <div className="flex flex-col items-center gap-5 px-5 text-sm font-medium md:text-base">
+        <Image src={asset("/logo.svg")} alt="Pixel Spell" width={189} height={52} className="mb-7 h-auto w-[200px] md:hidden" />
         <Dotted items={SOCIAL.map(([label, href]) => <a key={label} href={href} className={link}>{label}</a>)} />
         <Dotted
+          stackOnPhone
           items={[
-            <a key="mail" href="mailto:hello@pixelspell.studio" className={link}>hello@pixelspell.studio</a>,
+            <a key="mail" href={`mailto:${EMAIL}`} className={link}>{EMAIL}</a>,
             <span key="city">Jakarta, Indonesia</span>,
-            <a key="call" href={BOOK_A_CALL} className={link}>Book a call ↗</a>,
+            <BriefLink key="call" className={link}>Book a call ↗</BriefLink>,
           ]}
         />
-        <p className="font-mono text-xs tracking-[0.04em] text-ink/70">
-          © 2026 PIXEL SPELL STUDIO <span className="mx-3 text-pink" aria-hidden="true">•</span> MADE WITH MAGIC, NOT TEMPLATES ✦
-        </p>
+        <Dotted
+          stackOnPhone
+          gap="gap-2 md:gap-3.5"
+          items={[
+            <span key="c" className="font-mono text-xs font-normal tracking-[0.04em]">© 2026 PIXEL SPELL STUDIO</span>,
+            <span key="m" className="font-mono text-xs font-normal tracking-[0.04em]">MADE WITH MAGIC, NOT TEMPLATES ✦</span>,
+          ]}
+        />
       </div>
-      <Island className="mx-auto mt-12 max-w-[1440px]" />
+      <Island className="mx-auto mt-8 max-w-[1440px] md:mt-12" />
     </footer>
   );
 }

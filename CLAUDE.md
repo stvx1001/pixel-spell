@@ -29,12 +29,19 @@ npm run build   # must pass before pushing
 ## Source design
 
 Figma file `YUZMDH5kqna1441GZLvRPm` ("01. SkorKu Website 3.0"), page "Ref"
-(`4019:1594`), frame **"Pixel Spell — Home (Desktop 1440)"** (`4021:330`).
-Sections top to bottom: Hero v2 · Marquee · Selected Work · Services · Products ·
-Studio · Process · Packages · FAQ · CTA · Footer, plus the fixed Floating Nav.
-The old hero is still in the frame as a hidden layer; ignore it.
+(`4019:1594`), frames **"Pixel Spell — Home (Desktop 1440)"** (`4021:330`) and
+**"Pixel Spell — Home (Mobile 390)"** (`4073:400`), plus **"Brief Modal — Desktop"**
+(`4121:478`) and **"— Mobile 390"** (`4121:543`).
+Sections top to bottom: Hero v2 · Marquee · About (`studio.tsx`) · Selected Work ·
+Services · Packages · Products · Testimonials · FAQ · Footer, plus the fixed Floating
+Nav (desktop only; the phone has a menu button in the hero instead). The old hero
+is still in the frames as a hidden layer; ignore it. Eyebrow numbers skip (01–04,
+06, 08) because that is how they are in Figma.
 
-Each section is one component in `components/`, composed in `app/page.tsx`.
+Each section is one component in `components/`, composed in `app/page.tsx`. The
+phone frame is built into the same components with Tailwind breakpoints (`md` and
+up is desktop); where the phone frame is a scaled copy of the desktop card
+(packages, products) the phone sizes are the desktop ones × 350/421.
 Copy, colours and sizes were taken from the Figma nodes — check there before
 "fixing" a value.
 
@@ -46,12 +53,19 @@ Copy, colours and sizes were taken from the Figma nodes — check there before
   (marquee, service and step titles), Caveat (stickers), Silkscreen (pixel numbers).
 - **Rotation sign flips.** Figma rotation is counter-clockwise, CSS is clockwise:
   a Figma `-3` is CSS `rotate(3deg)`.
-- **Hero and package scenes are positioned in Figma pixels** and converted to
-  percentages (`at()` in `hero.tsx`, `place()` in `packages.tsx`), so they scale
-  as one piece. To move a character, change its Figma coordinates there.
+- **Hero, campfire and package scenes are positioned in Figma pixels** and
+  converted to percentages (`at()`/`atM()` in `hero.tsx`, `box()` in
+  `campfire.tsx`, `place()` in `packages.tsx`), so they scale as one piece. To
+  move a character, change its Figma coordinates there. The phone hero is its own
+  composition (`atM`, the 390 frame from y=80 to y=380).
 - The arched hero headline is SVG `<textPath>` on the same circle as the Figma
-  glyphs (centre 720,1190 → 720,1110 in stage space, r=1020). The real `<h1>`
-  is screen-reader only.
+  glyphs (desktop: centre 720,1190 → 720,1110 in stage space, r=1020; phone:
+  centre 195,325 in its stage, r=285.5, `textLength` 338). The real `<h1>` is
+  screen-reader only.
+- **Book a call** (floating nav, phone menu, footer) and the package buttons open
+  the Brief form (`brief.tsx`, a native `<dialog>`); a package button pre-picks its
+  package. The site is static, so "Send the brief" opens the visitor's email app
+  with the brief filled in. `#brief` in the URL opens it on load.
 - Works card art (`work-art.tsx`) is redrawn as SVG from the Figma shapes;
   pixel icons come from bitmaps in `components/pixel.tsx`.
 - `body` has `overflow-x: clip` because characters deliberately stand outside
@@ -75,14 +89,23 @@ files. `components/character.tsx` lists each one with its Figma component id.
   match Figma's render to <1/255 on average. Re-pulling needs `www.figma.com`
   allowed in the environment's network settings.
 - Footer illustration: frame "Spell Isle" (`4070:418`) → `public/island.png`
-  (2880×1720, opaque on `#fbf8f2`, the footer's own colour, so no seam).
+  (2880×1720, opaque on `#fbf8f2`, the footer's own colour, so no seam). The phone
+  shows the middle of it without the signpost (`4073:1420`) →
+  `public/island-mobile.png` (1169×1187). It was rendered in Chromium from the
+  Figma layers (island vector, sign, the four mascots' Art + Shadow); the same
+  render of the desktop frame matches `island.png` to <1/255.
+- The Studio campfire (`4117:522`) is built from its Figma layers in
+  `public/campfire/`: the island vector SVG, each mascot's raw Art PNG (resized
+  to 2× the size shown) and Shadow SVG, and the staff and sword props.
 
 ## Still placeholder (from Figma)
 
-Prices (`$X,XXX`), founder photo and name, the three testimonials, social
-URLs, and the "Book a call" target (currently a `mailto:`). Product and
-package copy, FAQ answers and the "Q4 2026" booking chip are drafts for Steven
-to confirm. Works cards link to `#work` until case-study pages exist.
+Founder name, the three testimonials and social URLs. The Brief form has no
+backend (it hands off to email; file uploads would need a form service), and the
+References field takes links rather than files. Product and package copy, FAQ
+answers and the "Q4 2026" booking chip are drafts for Steven to confirm. Works
+cards and "View all works" link to `#work` until case-study pages exist.
+"Join the waitlist" is a `mailto:`.
 
 ## Working with Steven
 
