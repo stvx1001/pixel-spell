@@ -1,0 +1,16 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="328" height="288" viewBox="0 0 328 288" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Glow aura" filter="url(#filter0_f_0_51)">
+<path id="Vector" d="M164 274C246.843 274 314 215.797 314 144C314 72.203 246.843 14 164 14C81.1573 14 14 72.203 14 144C14 215.797 81.1573 274 164 274Z" fill="url(#paint0_radial_0_51)"/>
+</g>
+<defs>
+<filter id="filter0_f_0_51" x="0" y="0" width="328" height="288" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+<feGaussianBlur stdDeviation="7" result="effect1_foregroundBlur_0_51"/>
+</filter>
+<radialGradient id="paint0_radial_0_51" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(164 144) scale(150 130)">
+<stop stop-color="#FFF5C2" stop-opacity="0.85"/>
+<stop offset="1" stop-color="#FFD1EA" stop-opacity="0"/>
+</radialGradient>
+</defs>
+</svg>

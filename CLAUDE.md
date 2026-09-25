@@ -35,8 +35,8 @@ Figma file `YUZMDH5kqna1441GZLvRPm` ("01. SkorKu Website 3.0"), page "Ref"
 Sections top to bottom: Hero v2 · Marquee · About (`studio.tsx`) · Selected Work ·
 Services · Packages · Products · Testimonials · FAQ · Footer, plus the fixed Floating
 Nav (desktop only; the phone has a menu button in the hero instead). The old hero
-is still in the frames as a hidden layer; ignore it. Eyebrow numbers skip (01–04,
-06, 08) because that is how they are in Figma.
+is still in the frames as a hidden layer; ignore it. Eyebrow numbers follow Figma
+as they are, gaps and repeats included (Packages and Products are both 06).
 
 Each section is one component in `components/`, composed in `app/page.tsx`. The
 phone frame is built into the same components with Tailwind breakpoints (`md` and
@@ -94,6 +94,13 @@ files. `components/character.tsx` lists each one with its Figma component id.
   `public/island-mobile.png` (1169×1187). It was rendered in Chromium from the
   Figma layers (island vector, sign, the four mascots' Art + Shadow); the same
   render of the desktop frame matches `island.png` to <1/255.
+- Package card scenes (`package-scenes.tsx`, files in `public/packages/`): First
+  Spark's campfire (`4150:1776`, ~25 vector layers) is one image,
+  `campfire.webp`, rendered at 3× in Chromium from Figma's own layer code.
+  Grand Spell's battle keeps its layers: magic FX SVGs behind and in front, and
+  the battle-pose fox, cat and wolf plus the archer bird as raw Art PNGs (2× the
+  size shown) with Shadow SVGs. The phone Packages frame still shows the old
+  scenes; the phone cards use the new desktop scenes, scaled.
 - The Studio campfire (`4117:522`) is built from its Figma layers in
   `public/campfire/`: the island vector SVG, each mascot's raw Art PNG (resized
   to 2× the size shown) and Shadow SVG, and the staff and sword props.
