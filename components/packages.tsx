@@ -1,18 +1,12 @@
 import { BriefButton, type Package } from "./brief";
 import { Character, type CharacterName } from "./character";
+import { BattleScene, box, CampfireScene, SH, SW } from "./package-scenes";
 import { Eyebrow, Heading, Sticker } from "./ui";
 
 /* Figma "Packages" (4039:360). Each card opens with a scene the width of the card
-   (421×210 on desktop); characters and pixels are placed in its Figma pixels and the
-   characters are allowed to stand out above the card. The phone frame is the same
-   card at 350 wide, so the type steps down by that ratio. */
-const SW = 421.33;
-const SH = 210;
-const place = (x: number, y: number, w: number) => ({
-  left: `${(x / SW) * 100}%`,
-  top: `${(y / SH) * 100}%`,
-  width: `${(w / SW) * 100}%`,
-});
+   (420×210 on desktop); art and pixels are placed in its Figma pixels and are
+   allowed to stand out above the card. The phone frame is the same card at 350
+   wide, so the type steps down by that ratio (and the scenes scale with it). */
 /* A pixel given by the top-left of its rotated bounding box and its size. */
 const pixel = (x: number, y: number, box: number, size: number) => ({
   left: `${((x + box / 2) / SW) * 100}%`,
@@ -42,9 +36,11 @@ const PACKS: {
   outlined: boolean;
   /* the second card's copy is full ink, the others are softened */
   soft: boolean;
-  ground: number;
+  /* the soft shadow the cast stands on: [top, width], if the scene has one */
+  ground?: [number, number];
   pixels: [number, number, number, number][];
-  cast: Cast;
+  cast?: Cast;
+  art?: React.ReactNode;
   speed?: boolean;
 }[] = [
   {
@@ -53,12 +49,9 @@ const PACKS: {
     desc: "A free first taste of the magic. See how we think before you commit to anything.",
     priceLabel: "PRICE", price: "Free",
     items: ["1 initial UI/UX screen", "Light illustration", "Light branding"],
-    cta: "Start free", tone: "dark", outlined: true, soft: true, ground: 297.33,
-    pixels: [[307.33, 30.67, 18.98, 16], [337.33, 67.92, 11.86, 10], [36, 43.51, 14.23, 12]],
-    cast: [
-      { name: "fox-casting", x: 15, y: -112, w: 300 },
-      { name: "bird-stand", x: 225, y: -16, w: 200 },
-    ],
+    cta: "Start free", tone: "dark", outlined: true, soft: true,
+    pixels: [[396, 18.67, 18.98, 16], [402, 61.92, 11.86, 10], [8, 41.51, 14.23, 12]],
+    art: <CampfireScene />,
   },
   {
     n: "02", pkg: "Grand Spell · $50", time: "1–2 WEEKS", tint: "bg-tint-pink", accent: "bg-pink", scene: "bg-pink",
@@ -66,13 +59,9 @@ const PACKS: {
     desc: "The full spell: product screens, illustration and a brand system that holds together.",
     priceLabel: "ONE-TIME", price: "$50",
     items: ["3 primary UI/UX screens, incl. states", "Illustration", "Design system", "Branding"],
-    cta: "Cast the spell", tone: "pink", outlined: false, soft: false, ground: 318.67,
+    cta: "Cast the spell", tone: "pink", outlined: false, soft: false, ground: [150, 318.67],
     pixels: [[328.67, 30.67, 18.98, 16], [358.67, 67.92, 11.86, 10], [36, 43.51, 14.23, 12]],
-    cast: [
-      { name: "cat-front", x: 50, y: -137.2, w: 320 },
-      { name: "bird-cheer", x: -23, y: -44.8, w: 230 },
-      { name: "wolf-crouch", x: 210, y: -64, w: 250, flip: true },
-    ],
+    art: <BattleScene />,
   },
   {
     n: "03", pkg: "Quick Charm · $12", time: "1–2 DAYS", tint: "bg-tint-teal", accent: "bg-teal", scene: "bg-[#cdebea]",
@@ -80,7 +69,7 @@ const PACKS: {
     desc: "One screen, done right. For when you need a single spell, fast.",
     priceLabel: "ONE-TIME", price: "$12",
     items: ["1 screen only", "Illustration"],
-    cta: "Get a charm", tone: "dark", outlined: true, soft: true, ground: 340, speed: true, pixels: [],
+    cta: "Get a charm", tone: "dark", outlined: true, soft: true, ground: [163, 340], speed: true, pixels: [],
     cast: [{ name: "wolf-run", x: 45, y: -150.4, w: 340 }],
   },
 ];
@@ -90,7 +79,7 @@ export function Packages() {
     <section id="packages" className="scroll-mt-8 bg-sand px-5 py-[72px] md:px-16 md:pt-16 md:pb-[140px]">
       <div className="mx-auto flex max-w-[1312px] flex-col items-center gap-[100px] lg:gap-[150px]">
         <div className="mx-auto flex max-w-[900px] flex-col gap-6 text-center">
-          <Eyebrow n="04">Ways to work</Eyebrow>
+          <Eyebrow n="06">Ways to work</Eyebrow>
           <Heading pre="Pick your " hot="potion." />
           <p className="lead mx-auto max-w-[720px] text-ink/80">
             Three simple ways to start. Fixed scope, a clear price and a timeline you can plan around — and every
@@ -106,25 +95,30 @@ export function Packages() {
             >
               {p.title === "Grand Spell" && (
                 <Sticker
-                  className="absolute top-[-22px] left-[70.3%] z-10 bg-pink px-[18.7px] py-[8.6px] text-[20px] lg:top-[-37px] lg:left-[68.8%] lg:px-[26px] lg:py-3 lg:text-[28px]"
+                  className="absolute top-[-6px] left-[70.3%] z-10 bg-pink px-[18.7px] py-[8.6px] text-[20px] lg:top-[-15px] lg:left-[68.8%] lg:px-[26px] lg:py-3 lg:text-[28px]"
                   rotate={-8}
                 >
                   pick me! ✦
                 </Sticker>
               )}
 
-              <div className={`relative -mb-[23px] aspect-[421.33/210] shrink-0 rounded-t-[23px] lg:-mb-7 lg:rounded-t-[28px] ${p.scene}`}>
-                <span
-                  className="absolute h-[12.4%] rounded-[50%] bg-[radial-gradient(closest-side,rgba(64,51,38,0.18),rgba(64,51,38,0))]"
-                  style={place(40, 163, p.ground)}
-                />
-                {p.pixels.map(([x, y, box, size]) => (
+              <div className={`relative -mb-[23px] aspect-[420/210] shrink-0 rounded-t-[23px] lg:-mb-7 lg:rounded-t-[28px] ${p.scene}`}>
+                {p.ground && (
+                  <span
+                    className="absolute h-[12.4%] rounded-[50%] bg-[radial-gradient(closest-side,rgba(64,51,38,0.18),rgba(64,51,38,0))]"
+                    style={box(40, p.ground[0], p.ground[1])}
+                  />
+                )}
+                {/* The campfire is drawn under its pixels; the Grand Spell cast stands in front of them. */}
+                {p.art && p.title === "First Spark" && p.art}
+                {p.pixels.map(([x, y, size, side]) => (
                   <span
                     key={x}
                     className="absolute aspect-square -translate-1/2 -rotate-12 rounded-[2px] bg-white/80"
-                    style={pixel(x, y, box, size)}
+                    style={pixel(x, y, size, side)}
                   />
                 ))}
+                {p.art && p.title !== "First Spark" && p.art}
                 {p.speed &&
                   [
                     [28, 70, 70],
@@ -134,11 +128,11 @@ export function Packages() {
                     <span
                       key={y}
                       className="absolute h-[3.8%] rounded-full bg-white/85"
-                      style={place(x, y, w)}
+                      style={box(x, y, w)}
                     />
                   ))}
-                {p.cast.map((c) => (
-                  <Character key={c.name} name={c.name} flip={c.flip} sizes="340px" className="absolute" style={place(c.x, c.y, c.w)} />
+                {p.cast?.map((c) => (
+                  <Character key={c.name} name={c.name} flip={c.flip} sizes="340px" className="absolute" style={box(c.x, c.y, c.w)} />
                 ))}
               </div>
 
