@@ -80,7 +80,7 @@ export function Hero() {
         </svg>
       </div>
 
-      <p className="mx-auto mt-10 max-w-[1000px] px-6 text-center text-[clamp(24px,3.1vw,44px)] leading-[1.2] font-medium tracking-[-0.02em] md:mt-[50px]">
+      <p className="mx-auto mt-10 max-w-[1000px] px-6 text-center text-[32px] leading-[1.25] font-bold tracking-[-0.02em] md:mt-[50px]">
         We make brands and products impossible to forget, with design, code and a little{" "}
         <span className="text-pink">magic.</span>
       </p>
