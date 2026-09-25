@@ -20,26 +20,26 @@ export function FaqList() {
         const isOpen = open === i;
         const id = `${base}-${i}`;
         return (
-          <li key={q} className={`rounded-3xl bg-white ring-1 transition-shadow ${isOpen ? "ring-pink/50" : "ring-ink/8 hover:ring-ink/20"}`}>
+          <li key={q} className={`rounded-3xl bg-white border transition-colors ${isOpen ? "border-pink/50" : "border-ink/8 hover:border-ink/20"}`}>
             <h3>
               <button
                 type="button"
                 aria-expanded={isOpen}
                 aria-controls={id}
                 onClick={() => setOpen(isOpen ? -1 : i)}
-                className="flex w-full items-center justify-between gap-6 py-[26px] pr-[26px] pl-8 text-left text-[clamp(18px,1.6vw,22px)] font-semibold tracking-[-0.01em] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pink"
+                className="flex w-full items-center justify-between gap-6 py-[26px] pr-[26px] pl-8 text-left text-[17px] font-semibold tracking-[-0.01em] md:text-[22px] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pink"
               >
                 {q}
                 <span
                   aria-hidden="true"
-                  className={`flex size-10 shrink-0 items-center justify-center rounded-full text-[22px] font-medium transition-[background-color,color,rotate] duration-300 ${isOpen ? "rotate-180 bg-pink text-white" : "bg-ink/6"}`}
+                  className={`flex size-10 shrink-0 items-center justify-center rounded-full text-[17px] font-medium md:text-[22px] transition-[background-color,color,rotate] duration-300 ${isOpen ? "rotate-180 bg-pink text-white" : "bg-ink/6"}`}
                 >
                   {isOpen ? "–" : "+"}
                 </span>
               </button>
             </h3>
-            <div id={id} role="region" className={`grid transition-[grid-template-rows] duration-300 ${isOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}>
-              <p className="overflow-hidden px-8 font-mono text-[15px] leading-[1.7] text-ink/80">
+            <div id={id} role="region" className={`grid transition-[grid-template-rows,margin] duration-300 ${isOpen ? "-mt-2.5 grid-rows-[1fr]" : "grid-rows-[0fr]"}`}>
+              <p className="overflow-hidden pr-[26px] pl-8 font-mono text-sm leading-[1.7] text-ink/80 md:text-[15px]">
                 <span className="block pb-[26px]">{a}</span>
               </p>
             </div>

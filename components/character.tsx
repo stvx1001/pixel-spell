@@ -67,13 +67,20 @@ function Placeholder({ label }: { label: string }) {
   );
 }
 
-/* The footer island is one big illustration (Figma frame "Spell Isle", 4070:418). */
+/* The footer island is one big illustration (Figma frame "Spell Isle", 4070:418).
+   The phone shows the middle of it without the signpost (Mobile 390 frame, 4073:1420),
+   rendered from the same Figma layers as island-mobile.png. */
 export function Island({ className = "" }: { className?: string }) {
-  const file = "island.png";
-  if (has(file)) {
+  const alt = "Pixel Spell's island, with the fox, cat, wolf and bird";
+  if (has("island.png") && has("island-mobile.png")) {
     return (
-      <div className={`relative aspect-[1440/860] ${className}`}>
-        <Image src={asset(`/${file}`)} alt="Pixel Spell's island, with the fox, cat, wolf and bird" fill sizes="100vw" className="object-contain" />
+      <div className={className}>
+        <div className="relative aspect-[390/395.6] md:hidden">
+          <Image src={asset("/island-mobile.png")} alt={alt} fill sizes="100vw" className="object-contain" />
+        </div>
+        <div className="relative hidden aspect-[1440/860] md:block">
+          <Image src={asset("/island.png")} alt={alt} fill sizes="100vw" className="object-contain" />
+        </div>
       </div>
     );
   }

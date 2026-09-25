@@ -51,11 +51,18 @@ html {
   scroll-behavior: smooth;
 }
 
+/* The page stays put while the brief form is open */
+html:has(dialog[open]) {
+  overflow: hidden;
+}
+
 body {
   /* characters are allowed to stand outside their cards; never let that scroll sideways */
   overflow-x: clip;
   background: var(--color-cream);
   color: var(--color-ink);
+  /* Figma's "auto" line height; text that needs more sets its own leading */
+  line-height: normal;
   font-family: var(--font-sans), system-ui, sans-serif;
 }
 
@@ -63,16 +70,19 @@ body {
 @utility eyebrow {
   font-family: var(--font-mono);
   font-weight: 700;
-  font-size: 15px;
+  font-size: 14px;
   letter-spacing: 0.02em;
+  @media (width >= 48rem) {
+    font-size: 15px;
+  }
   text-transform: uppercase;
   white-space: pre;
 }
 
-/* Shrikhand section heading, 84px on desktop */
+/* Shrikhand section heading: 40px on a phone, 84px on desktop */
 @utility title {
   font-family: var(--font-display);
-  font-size: clamp(44px, 6.4vw, 84px);
+  font-size: clamp(40px, 6.4vw, 84px);
   line-height: 1;
   letter-spacing: -0.01em;
 }

@@ -32,14 +32,30 @@ export function Heading({
   );
 }
 
-type Tone = "dark" | "pink" | "light";
+export type Tone = "dark" | "pink" | "light";
 const tones: Record<Tone, string> = {
   dark: "bg-ink text-white hover:bg-ink/85",
   pink: "bg-pink text-white hover:bg-pink-deep",
   light: "bg-white/70 text-ink ring-1 ring-ink/12 hover:bg-white",
 };
 
-/* Pill button with the yellow ↗ used throughout the design. */
+/* The pill button's look, shared by <Button> (a link) and <BriefButton> (opens the brief form). */
+const SIZE = "py-4 pr-7 pl-8 text-[15px] md:py-[18px] md:text-[17px]";
+export const buttonClass = (tone: Tone, className = "", size = SIZE) =>
+  `group inline-flex items-center justify-center gap-2.5 rounded-full font-medium transition-[background-color,transform] duration-200 hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pink ${size} ${tones[tone]} ${className}`;
+
+/* The yellow ↗ used throughout the design. */
+export function Arrow({ tone = "dark", glyph = "↗" }: { tone?: Tone; glyph?: string }) {
+  return (
+    <span
+      aria-hidden="true"
+      className={`transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 ${tone === "light" ? "" : "text-yellow"}`}
+    >
+      {glyph}
+    </span>
+  );
+}
+
 export function Button({
   href,
   children,
@@ -54,19 +70,9 @@ export function Button({
   className?: string;
 }) {
   return (
-    <Link
-      href={href}
-      className={`group inline-flex items-center justify-center gap-2.5 rounded-full px-7 py-4 text-[17px] font-medium transition-[background-color,transform] duration-200 hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pink ${tones[tone]} ${className}`}
-    >
+    <Link href={href} className={buttonClass(tone, className)}>
       {children}
-      {arrow && (
-        <span
-          aria-hidden="true"
-          className={`transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 ${tone === "dark" ? "text-yellow" : ""}`}
-        >
-          ↗
-        </span>
-      )}
+      {arrow && <Arrow tone={tone} />}
     </Link>
   );
 }
@@ -83,7 +89,7 @@ export function Sticker({
 }) {
   return (
     <span
-      className={`inline-block rounded-full px-7 py-3 font-hand text-[28px] leading-none whitespace-nowrap text-white ${className}`}
+      className={`rounded-full font-hand leading-none whitespace-nowrap text-white ${className}`}
       style={{ transform: `rotate(${rotate}deg)` }}
       aria-hidden="true"
     >
@@ -92,4 +98,4 @@ export function Sticker({
   );
 }
 
-export const BOOK_A_CALL = "mailto:hello@pixelspell.studio?subject=Let%E2%80%99s%20cast%20a%20spell";
+export const EMAIL = "hello@pixelspell.studio";
