@@ -63,7 +63,9 @@ const PACKS: {
     priceLabel: "ONE-TIME", price: "$50",
     items: ["3 primary UI/UX screens, incl. states", "Illustration", "Design system", "Branding"],
     cta: "Cast the spell", tone: "pink", outlined: false, soft: false, ground: [150, 318.67], fr: "1.1fr",
-    glow: "border-3 border-pink shadow-[0_0_140px_0_rgba(255,202,72,0.35),0_22px_80px_14px_rgba(242,84,158,0.6)]",
+    /* Figma's glow here is a pink line and a drop shadow; Steven asked for light
+       instead, so the glow is centred and the line is a turning rim (see <Light>). */
+    glow: "shadow-[0_0_28px_4px_rgba(255,202,72,0.45),0_0_90px_22px_rgba(242,84,158,0.45)]",
     pixels: [[328.67, 30.67, 18.98, 16], [358.67, 67.92, 11.86, 10], [36, 43.51, 14.23, 12]],
     art: <BattleScene />,
   },
@@ -78,6 +80,29 @@ const PACKS: {
     art: <WorkshopScene />,
   },
 ];
+
+/* Grand Spell's light (not in Figma; asked for by Steven). */
+const RIM =
+  "conic-gradient(from var(--spin), #f2549e, #ffca48 18%, #fff4cf 26%, #f2549e 42%, #ff9ccb 62%, #ffca48 80%, #f2549e)";
+
+/* A soft pink-and-gold halo that radiates from the card and slowly breathes. */
+function Aura() {
+  return (
+    <span
+      aria-hidden="true"
+      className="absolute -inset-3 animate-aura rounded-[32px] bg-linear-to-b from-[#ffca48]/70 via-[#f2549e]/55 to-[#ffca48]/60 blur-2xl"
+    />
+  );
+}
+
+/* A band of light that sweeps across the card every few seconds. */
+function Sheen() {
+  return (
+    <span aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden" style={{ borderRadius: u(28) }}>
+      <span className="absolute inset-y-0 left-0 w-1/4 animate-sheen bg-linear-to-r from-white/0 via-white/55 to-white/0 mix-blend-overlay" />
+    </span>
+  );
+}
 
 export function Packages() {
   return (
@@ -99,11 +124,16 @@ export function Packages() {
                 className={`relative flex flex-col ${p.outlined ? "border border-ink/8" : ""}`}
                 style={{ "--u": "calc(100cqw / 421)", height: u(860) } as React.CSSProperties}
               >
-                {/* Card glow. Grand Spell's pink line sits just outside the card. */}
+                {/* Card glow. Grand Spell's is light: an aura, and a rim just outside the card. */}
+                {p.title === "Grand Spell" && <Aura />}
                 <span
                   aria-hidden="true"
-                  className={`absolute bg-white ${p.glow} ${p.title === "Grand Spell" ? "-inset-[3px]" : "-inset-px"}`}
-                  style={{ borderRadius: p.title === "Grand Spell" ? `calc(${u(28)} + 3px)` : u(28) }}
+                  className={`absolute ${p.glow} ${p.title === "Grand Spell" ? "-inset-[3px] animate-spin-light" : "-inset-px bg-white"}`}
+                  style={
+                    p.title === "Grand Spell"
+                      ? { borderRadius: `calc(${u(28)} + 3px)`, background: RIM }
+                      : { borderRadius: u(28) }
+                  }
                 />
 
                 <div
@@ -118,11 +148,11 @@ export function Packages() {
                   )}
                   {/* The campfire is drawn under its pixels; the Grand Spell cast stands in front of them. */}
                   {p.title === "First Spark" && p.art}
-                  {p.pixels.map(([x, y, size, side]) => (
+                  {p.pixels.map(([x, y, size, side], i) => (
                     <span
                       key={x}
-                      className="absolute aspect-square -translate-1/2 -rotate-12 rounded-[2px] bg-white/80"
-                      style={pixel(x, y, size, side)}
+                      className="absolute aspect-square -translate-1/2 -rotate-12 animate-twinkle rounded-[2px] bg-white/80"
+                      style={{ ...pixel(x, y, size, side), animationDelay: `${i * -0.8}s` }}
                     />
                   ))}
                   {p.title !== "First Spark" && p.art}
@@ -183,6 +213,7 @@ export function Packages() {
                     {p.cta}
                   </BriefButton>
                 </div>
+                {p.title === "Grand Spell" && <Sheen />}
               </div>
             </article>
           ))}

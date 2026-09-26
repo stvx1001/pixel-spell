@@ -100,6 +100,14 @@ files. `components/character.tsx` lists each one with its Figma component id.
   pixel at the card's width, a container-query unit), so write Figma's
   100%-scale numbers (divide the Figma value by the card's scale). The "Card glow"
   shadows are the exception: fixed px, as in Figma.
+- **Not in Figma, asked for by Steven:** Grand Spell's glow is *light*, not a drop
+  shadow: a centred glow, a breathing aura (`<Aura>`), a turning pink-and-gold rim
+  in place of the solid 3px line (`RIM`, `@property --spin`) and a sheen that sweeps
+  across the card (`<Sheen>`). The card art also moves a little: the Grand Spell
+  bird and fox float, the cat and wolf breathe, the magic shimmers and twinkles,
+  the scene pixels twinkle, the campfire gets a flickering firelight, the workshop
+  floats. Keyframes are in `globals.css`; they animate `transform`/`opacity` only,
+  and the reduced-motion rule there stills them.
 - Package card scenes (`package-scenes.tsx`, files in `public/packages/`): First
   Spark's campfire (`4150:1776`, ~25 vector layers) is one image,
   `campfire.webp`, rendered at 3× in Chromium from Figma's own layer code; Quick
