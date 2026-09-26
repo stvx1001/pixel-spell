@@ -26,10 +26,45 @@ export function CampfireScene() {
   );
 }
 
-/* A mascot frame: a square box with the ground shadow and the raw art inset, as Figma lays it out. */
-function Mascot({ x, y, s, name, shadow, blur, art }: { x: number; y: number; s: number; name: string; shadow: string; blur: string; art: string }) {
+/* The phone frame sets a few layers lower than desktop does. Given both tops (in the
+   desktop scene's pixels), the layer uses `yPhone` below lg and `y` from lg up. */
+const tops = (y: number, yPhone = y) =>
+  ({ "--top": `${(yPhone / SH) * 100}%`, "--top-lg": `${(y / SH) * 100}%` }) as React.CSSProperties;
+const topClass = "top-(--top) lg:top-(--top-lg)";
+/* box() without `top`, for layers placed with tops(). */
+const across = (x: number, w: number, h?: number) => {
+  const { left, width, height } = box(x, 0, w, h);
+  return { left, width, ...(height === undefined ? {} : { height }) };
+};
+
+/* A mascot frame: a square box with the ground shadow and the raw art inset, as Figma
+   lays it out. `flip` mirrors the whole frame, shadow included, as Figma's flip does. */
+function Mascot({
+  x,
+  y,
+  yPhone,
+  s,
+  name,
+  shadow,
+  blur,
+  art,
+  flip = false,
+}: {
+  x: number;
+  y: number;
+  yPhone?: number;
+  s: number;
+  name: string;
+  shadow: string;
+  blur: string;
+  art: string;
+  flip?: boolean;
+}) {
   return (
-    <div className="absolute aspect-square" style={box(x, y, s)}>
+    <div
+      className={`absolute aspect-square ${topClass} ${flip ? "-scale-x-100" : ""}`}
+      style={{ ...across(x, s), ...tops(y, yPhone) }}
+    >
       <div className="absolute" style={{ inset: shadow }}>
         <div className="absolute" style={{ inset: blur }}>
           <Image src={src(`shadow-${name}.svg`)} alt="" fill sizes="200px" />
@@ -54,19 +89,20 @@ function Fx({ file, inset, blur }: { file: string; inset: string; blur?: string 
 }
 
 /* The Grand Spell battle: magic behind, the bird and the fox, magic in front, then
-   the cat and the wolf, back to front as in Figma. */
+   the cat and the wolf, back to front as in Figma. On a phone the magic, the bird
+   and the fox sit lower (Mobile 390 frame, in desktop scene pixels). */
 export function BattleScene() {
-  const fxFrame = box(-40, -200, 500, 410);
+  const fxFrame = { ...across(-40, 500, 410), ...tops(-200, -188) };
   return (
     <>
-      <div className="absolute" style={fxFrame}>
+      <div className={`absolute ${topClass}`} style={fxFrame}>
         <Fx file="glow" inset="9.76% 19.6% 26.83% 20.4%" blur="-5.38% -4.67%" />
         <Fx file="circle" inset="79.02% 10.8% 6.34% 10.8%" blur="-13.33% -2.04%" />
         <Fx file="swirl-back" inset="22.68% 19.12% 43.2% 12.96%" />
       </div>
-      <Mascot name="bird" x={262} y={-150} s={160} shadow="92.63% 38.42% 3.13% 31.33%" blur="-35.29% -4.96%" art="15.55% 13.73% 10.35% 14.15%" />
-      <Mascot name="fox" x={68} y={-136} s={250} shadow="93% 28.75% 3% 38.75%" blur="-37.5% -4.62%" art="3.5% 7.5% 17% 7.5%" />
-      <div className="absolute" style={fxFrame}>
+      <Mascot name="bird" x={262} y={-150} yPhone={-121.2} s={160} shadow="92.63% 38.42% 3.13% 31.33%" blur="-35.29% -4.96%" art="15.55% 13.73% 10.35% 14.15%" />
+      <Mascot name="fox" x={68} y={-136} yPhone={-119.2} s={250} flip shadow="93% 28.75% 3% 38.75%" blur="-37.5% -4.62%" art="3.5% 7.5% 17% 7.5%" />
+      <div className={`absolute ${topClass}`} style={fxFrame}>
         <Fx file="swirl-front" inset="36.85% 13.04% 29% 19.92%" />
         <Fx file="sparkles" inset="16.83% 8% 39.51% 2.4%" />
         <Fx file="sparkles-gold" inset="17.8% 22.8% 67.07% 24.6%" />
