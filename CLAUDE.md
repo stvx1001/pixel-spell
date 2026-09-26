@@ -55,7 +55,7 @@ Copy, colours and sizes were taken from the Figma nodes — check there before
   a Figma `-3` is CSS `rotate(3deg)`.
 - **Hero, campfire and package scenes are positioned in Figma pixels** and
   converted to percentages (`at()`/`atM()` in `hero.tsx`, `box()` in
-  `campfire.tsx`, `place()` in `packages.tsx`), so they scale as one piece. To
+  `campfire.tsx`, `box()` in `package-scenes.tsx`), so they scale as one piece. To
   move a character, change its Figma coordinates there. The phone hero is its own
   composition (`atM`, the 390 frame from y=80 to y=380).
 - The arched hero headline is SVG `<textPath>` on the same circle as the Figma
@@ -99,8 +99,9 @@ files. `components/character.tsx` lists each one with its Figma component id.
   `campfire.webp`, rendered at 3× in Chromium from Figma's own layer code.
   Grand Spell's battle keeps its layers: magic FX SVGs behind and in front, and
   the battle-pose fox, cat and wolf plus the archer bird as raw Art PNGs (2× the
-  size shown) with Shadow SVGs. The phone Packages frame still shows the old
-  scenes; the phone cards use the new desktop scenes, scaled.
+  size shown) with Shadow SVGs; the fox is mirrored (`flip`). The phone frame is
+  the same scenes scaled, except that the Grand Spell magic, bird and fox sit
+  lower there: `yPhone` / `tops()` give those layers a second top below `lg`.
 - The Studio campfire (`4117:522`) is built from its Figma layers in
   `public/campfire/`: the island vector SVG, each mascot's raw Art PNG (resized
   to 2× the size shown) and Shadow SVG, and the staff and sword props.

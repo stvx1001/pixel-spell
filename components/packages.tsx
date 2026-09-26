@@ -95,7 +95,7 @@ export function Packages() {
             >
               {p.title === "Grand Spell" && (
                 <Sticker
-                  className="absolute top-[-6px] left-[70.3%] z-10 bg-pink px-[18.7px] py-[8.6px] text-[20px] lg:top-[-15px] lg:left-[68.8%] lg:px-[26px] lg:py-3 lg:text-[28px]"
+                  className="absolute top-[-20px] left-[70.3%] z-10 bg-pink px-[18.7px] py-[8.6px] text-[20px] lg:top-[-15px] lg:left-[68.8%] lg:px-[26px] lg:py-3 lg:text-[28px]"
                   rotate={-8}
                 >
                   pick me! ✦
