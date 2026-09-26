@@ -1,8 +1,8 @@
 import Image from "next/image";
 import { asset } from "@/lib/asset";
 
-/* The art at the top of the First Spark and Grand Spell cards (Figma "Packages",
-   4039:360). Positions are the Figma pixels of the 420×210 card scene, as
+/* The art at the top of the package cards (Figma "Packages", 4039:360). Every card is
+   a scaled copy of one 420×210 scene; positions are that scene's Figma pixels as
    percentages, so a scene scales with its card. Files are in public/packages/. */
 export const SW = 420;
 export const SH = 210;
@@ -13,11 +13,24 @@ export const box = (x: number, y: number, w: number, h?: number) => ({
   ...(h === undefined ? {} : { height: `${(h / SH) * 100}%` }),
 });
 
+/* A few Grand Spell layers sit elsewhere in the phone frame. `at()` places a layer at
+   (x, y) from lg up and at the phone position below it (same scene pixels). */
+type Phone = { x?: number; y?: number };
+const pct = (v: number, of: number) => `${(v / of) * 100}%`;
+const at = (x: number, y: number, phone: Phone = {}) =>
+  ({
+    "--l": pct(phone.x ?? x, SW),
+    "--t": pct(phone.y ?? y, SH),
+    "--l-lg": pct(x, SW),
+    "--t-lg": pct(y, SH),
+  }) as React.CSSProperties;
+const atClass = "left-(--l) top-(--t) lg:left-(--l-lg) lg:top-(--t-lg)";
+
 const src = (file: string) => asset(`/packages/${file}`);
 
-/* "Illustration / Campfire (vector)" (4150:1776): some 25 vector layers, rendered
-   together from Figma's own layer code into one image (3×, with room for the staff
-   that reaches above the scene). */
+/* First Spark: "Illustration / Campfire (vector)" (4150:1776), ~25 vector layers
+   rendered together from Figma's own layer code into one image (3×, with room for
+   the staff that reaches above the scene). */
 export function CampfireScene() {
   return (
     <div className="absolute" style={box(3, -48, 413.12, 244.4)}>
@@ -26,35 +39,33 @@ export function CampfireScene() {
   );
 }
 
-/* The phone frame sets a few layers lower than desktop does. Given both tops (in the
-   desktop scene's pixels), the layer uses `yPhone` below lg and `y` from lg up. */
-const tops = (y: number, yPhone = y) =>
-  ({ "--top": `${(yPhone / SH) * 100}%`, "--top-lg": `${(y / SH) * 100}%` }) as React.CSSProperties;
-const topClass = "top-(--top) lg:top-(--top-lg)";
-/* box() without `top`, for layers placed with tops(). */
-const across = (x: number, w: number, h?: number) => {
-  const { left, width, height } = box(x, 0, w, h);
-  return { left, width, ...(height === undefined ? {} : { height }) };
-};
+/* Quick Charm: "Illustration / Charm workshop" (4183:478), one image. */
+export function WorkshopScene() {
+  return (
+    <div className="absolute" style={box(2.17, -105.94, 416.67, 285.1)}>
+      <Image src={src("workshop.webp")} alt="" fill sizes="(min-width: 1024px) 420px, 100vw" className="object-contain" />
+    </div>
+  );
+}
 
 /* A mascot frame: a square box with the ground shadow and the raw art inset, as Figma
    lays it out. `flip` mirrors the whole frame, shadow included, as Figma's flip does. */
 function Mascot({
+  name,
   x,
   y,
-  yPhone,
   s,
-  name,
+  phone,
   shadow,
   blur,
   art,
   flip = false,
 }: {
+  name: string;
   x: number;
   y: number;
-  yPhone?: number;
   s: number;
-  name: string;
+  phone?: Phone;
   shadow: string;
   blur: string;
   art: string;
@@ -62,8 +73,8 @@ function Mascot({
 }) {
   return (
     <div
-      className={`absolute aspect-square ${topClass} ${flip ? "-scale-x-100" : ""}`}
-      style={{ ...across(x, s), ...tops(y, yPhone) }}
+      className={`absolute aspect-square ${atClass} ${flip ? "-scale-x-100" : ""}`}
+      style={{ width: pct(s, SW), ...at(x, y, phone) }}
     >
       <div className="absolute" style={{ inset: shadow }}>
         <div className="absolute" style={{ inset: blur }}>
@@ -71,13 +82,13 @@ function Mascot({
         </div>
       </div>
       <div className="absolute" style={{ inset: art }}>
-        <Image src={src(`${name}-${name === "bird" ? "archer" : "battle"}.png`)} alt="" fill sizes="220px" className="object-contain" />
+        <Image src={src(`${name}-battle.png`)} alt="" fill sizes="250px" className="object-contain" />
       </div>
     </div>
   );
 }
 
-/* A layer of the magic effect: FX frames are 500×410 at (-40,-200); each layer is inset within that. */
+/* A layer of the magic effect, inset in its 500×410 FX frame. */
 function Fx({ file, inset, blur }: { file: string; inset: string; blur?: string }) {
   return (
     <div className="absolute" style={{ inset }}>
@@ -88,28 +99,34 @@ function Fx({ file, inset, blur }: { file: string; inset: string; blur?: string 
   );
 }
 
-/* The Grand Spell battle: magic behind, the bird and the fox, magic in front, then
-   the cat and the wolf, back to front as in Figma. On a phone the magic, the bird
-   and the fox sit lower (Mobile 390 frame, in desktop scene pixels). */
+function FxFrame({ x, y, phone, children }: { x: number; y: number; phone?: Phone; children: React.ReactNode }) {
+  return (
+    <div className={`absolute ${atClass}`} style={{ width: pct(500, SW), height: pct(410, SH), ...at(x, y, phone) }}>
+      {children}
+    </div>
+  );
+}
+
+/* Grand Spell: the battle. Magic behind, then the bird, fox, cat and wolf in their
+   battle poses, then magic in front of everyone, as in Figma. */
 export function BattleScene() {
-  const fxFrame = { ...across(-40, 500, 410), ...tops(-200, -188) };
   return (
     <>
-      <div className={`absolute ${topClass}`} style={fxFrame}>
+      <FxFrame x={-40} y={-200} phone={{ y: -188 }}>
         <Fx file="glow" inset="9.76% 19.6% 26.83% 20.4%" blur="-5.38% -4.67%" />
         <Fx file="circle" inset="79.02% 10.8% 6.34% 10.8%" blur="-13.33% -2.04%" />
         <Fx file="swirl-back" inset="22.68% 19.12% 43.2% 12.96%" />
-      </div>
-      <Mascot name="bird" x={262} y={-150} yPhone={-121.2} s={160} shadow="92.63% 38.42% 3.13% 31.33%" blur="-35.29% -4.96%" art="15.55% 13.73% 10.35% 14.15%" />
-      <Mascot name="fox" x={68} y={-136} yPhone={-119.2} s={250} flip shadow="93% 28.75% 3% 38.75%" blur="-37.5% -4.62%" art="3.5% 7.5% 17% 7.5%" />
-      <div className={`absolute ${topClass}`} style={fxFrame}>
+      </FxFrame>
+      <Mascot name="bird" x={252} y={-146} s={168} phone={{ y: -119.6 }} shadow="93% 30% 3.5% 37.5%" blur="-42.86% -4.62%" art="4% 4.5% 21.68% 5.5%" />
+      <Mascot name="fox" x={68} y={-136} s={250} phone={{ y: -119.2 }} flip shadow="93% 28.75% 3% 38.75%" blur="-37.5% -4.62%" art="3.5% 7.5% 17% 7.5%" />
+      <Mascot name="cat" x={-19.66} y={-25.95} s={212} phone={{ x: -8, y: -20.34 }} shadow="91.5% 18.75% 4% 18.75%" blur="-33.33% -2.4%" art="4% 8.64% 5.5% 8.64%" />
+      <Mascot name="wolf" x={171.04} y={-39.04} s={232} phone={{ x: 165.6, y: -39.8 }} shadow="91.5% 17.5% 4.5% 27.5%" blur="-37.5% -2.73%" art="29.3% 2% 6% 2%" />
+      <FxFrame x={-28.67} y={-118.94} phone={{ x: -40, y: -188 }}>
         <Fx file="swirl-front" inset="36.85% 13.04% 29% 19.92%" />
         <Fx file="sparkles" inset="16.83% 8% 39.51% 2.4%" />
         <Fx file="sparkles-gold" inset="17.8% 22.8% 67.07% 24.6%" />
         <Fx file="pixels" inset="21.95% 33.2% 59.02% 10%" />
-      </div>
-      <Mascot name="cat" x={-35} y={-74} s={260} shadow="93% 28.17% 3.5% 30.58%" blur="-42.86% -3.64%" art="27.6% 7.7% 4% 15.15%" />
-      <Mascot name="wolf" x={232} y={-20} s={205} shadow="92.75% 27.7% 3.25% 32.55%" blur="-37.5% -3.77%" art="25.25% 17.58% 3.68% 22.13%" />
+      </FxFrame>
     </>
   );
 }
