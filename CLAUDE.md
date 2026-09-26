@@ -94,14 +94,20 @@ files. `components/character.tsx` lists each one with its Figma component id.
   `public/island-mobile.png` (1169×1187). It was rendered in Chromium from the
   Figma layers (island vector, sign, the four mascots' Art + Shadow); the same
   render of the desktop frame matches `island.png` to <1/255.
+- **Package cards** (`packages.tsx`) are scaled copies of one 421×860 card: 90%,
+  110% and 96% on desktop (bottom-aligned; grid columns 0.9fr 1.1fr 0.96fr) and
+  ~83% on a phone. Every size inside a card is base-card pixels × `--u` (one base
+  pixel at the card's width, a container-query unit), so write Figma's
+  100%-scale numbers (divide the Figma value by the card's scale). The "Card glow"
+  shadows are the exception: fixed px, as in Figma.
 - Package card scenes (`package-scenes.tsx`, files in `public/packages/`): First
   Spark's campfire (`4150:1776`, ~25 vector layers) is one image,
-  `campfire.webp`, rendered at 3× in Chromium from Figma's own layer code.
-  Grand Spell's battle keeps its layers: magic FX SVGs behind and in front, and
-  the battle-pose fox, cat and wolf plus the archer bird as raw Art PNGs (2× the
-  size shown) with Shadow SVGs; the fox is mirrored (`flip`). The phone frame is
-  the same scenes scaled, except that the Grand Spell magic, bird and fox sit
-  lower there: `yPhone` / `tops()` give those layers a second top below `lg`.
+  `campfire.webp`, rendered at 3× in Chromium from Figma's own layer code; Quick
+  Charm's "Charm workshop" is one image, `workshop.webp`. Grand Spell's battle
+  keeps its layers: magic FX SVGs behind and in front, and the fox, bird, cat and
+  wolf battle poses as raw Art PNGs (2× the size shown) with Shadow SVGs; the fox
+  is mirrored (`flip`). A few of those layers sit elsewhere in the phone frame:
+  `phone={{ x, y }}` / `at()` give them a second position below `lg`.
 - The Studio campfire (`4117:522`) is built from its Figma layers in
   `public/campfire/`: the island vector SVG, each mascot's raw Art PNG (resized
   to 2× the size shown) and Shadow SVG, and the staff and sword props.
